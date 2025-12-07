@@ -1,5 +1,5 @@
-from PyQt6.QtWidgets import QApplication, QMainWindow, QMessageBox, QListWidgetItem, QWidget
-from PyQt6.QtCore import QTimer, QByteArray, QThread, pyqtSignal
+from PyQt6.QtWidgets import QApplication, QMainWindow, QMessageBox, QListWidgetItem, QWidget, QLabel
+from PyQt6.QtCore import QTimer, QByteArray, QThread, pyqtSignal, Qt
 from PyQt6.QtGui import QPixmap, QIcon
 
 import api
@@ -41,14 +41,13 @@ class MainWindow(QMainWindow):
         for key in listItems.keys():
             listItemWidget = QListWidgetItem()
             listItemWidget.setText(listItems[key]["localized_name"])
-            listItemWidget.setData(1, listItems[key])
+            listItemWidget.setData(Qt.ItemDataRole.UserRole, listItems[key])
             self.heroList.addItem(listItemWidget)
         
-        self.heroList.itemDoubleClicked.connect(self.itemDoubleClicked)
+        self.heroList.itemDoubleClicked.connect(self.heroDoubleClicked)
         
-    def itemDoubleClicked(self, item):
-        print(f"item Double Clicked {item.data(1)['localized_name']}")
-        self.showHeroSpecificPage(item.data(1)['id'])        
+    def heroDoubleClicked(self, item):
+        self.showHeroSpecificPage(item.data(Qt.ItemDataRole.UserRole)['id'])        
         
     def showHeroSpecificPage(self, id):
         self.heroList.hide()
@@ -63,8 +62,21 @@ class MainWindow(QMainWindow):
         
         self.heroPage.show()
             
-    def showItemSpecificPage(self, id):
-        pass
+    # QLabel variables include : itemIcon, itemTitle, itemDescription (QLabels);
+    def itemDoubleClicked(self, item):
+        item = item.data(Qt.ItemDataRole.UserRole)
+        self.showItemSpecificPage(item)
+
+    def showItemSpecificPage(self, item):
+        self.heroPage.hide()
+        self.heroList.hide()
+        self.itemView = QWidget(self)
+        uic.loadUi("ItemView.ui", self.itemView)
+        icon = QIcon(api.getItemImage(item["img"], item["dname"]))
+        self.itemView.itemIcon.setPixmap(icon.pixmap(64,64))
+        self.itemView.itemTitle.setText(item["dname"])
+        self.itemView.itemDescription.setText(item["lore"])
+        self.itemView.show()
 
     def closeWindow(self):
         confirm = QMessageBox.question(self,
@@ -86,18 +98,20 @@ class MainWindow(QMainWindow):
         for key in response["start_game_items"].keys():
             listItem = QListWidgetItem()
             item = api.ITEM_BY_ID[key]
+            listItem.setData(Qt.ItemDataRole.UserRole, item)
+            listItem.setText(item["dname"])
             
             loader = ImageLoader(listItem, item)
             loader.finished.connect(self.setIcon)
             loader.start()
             self.loaders.append(loader)
-            
-            listItem.setText(item["dname"]) 
+             
             self.heroPage.starterItems.addItem(listItem)
             
         for key in response["early_game_items"].keys():
             listItem = QListWidgetItem()
             item = api.ITEM_BY_ID[key]
+            listItem.setData(Qt.ItemDataRole.UserRole, item)
             listItem.setText(item["dname"])
 
             loader = ImageLoader(listItem, item)
@@ -111,29 +125,36 @@ class MainWindow(QMainWindow):
             listItem = QListWidgetItem()
             item = api.ITEM_BY_ID[key]
             listItem.setText(item["dname"])
-
+            listItem.setData(Qt.ItemDataRole.UserRole, item)
+            
             loader = ImageLoader(listItem, item)
             loader.finished.connect(self.setIcon)
             loader.start()
             self.loaders.append(loader)
-
+            
             self.heroPage.midGame.addItem(listItem)
             
         for key in response["late_game_items"].keys():
             listItem = QListWidgetItem()
             item = api.ITEM_BY_ID[key]
+            listItem.setData(Qt.ItemDataRole.UserRole, item)
             listItem.setText(item["dname"])
 
             loader = ImageLoader(listItem, item)
             loader.finished.connect(self.setIcon)
             loader.start()
+            
             self.loaders.append(loader)
 
             self.heroPage.lateGame.addItem(listItem)
 
+        self.heroPage.starterItems.itemDoubleClicked.connect(self.itemDoubleClicked)
+        self.heroPage.earlyGame.itemDoubleClicked.connect(self.itemDoubleClicked)
+        self.heroPage.midGame.itemDoubleClicked.connect(self.itemDoubleClicked)
+        self.heroPage.lateGame.itemDoubleClicked.connect(self.itemDoubleClicked)
+
     def setIcon(self, listItem, fileName):
         listItem.setIcon(QIcon(fileName))
-        
         
 app = QApplication(sys.argv)
 
