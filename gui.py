@@ -1,6 +1,6 @@
-from PyQt6.QtWidgets import QApplication, QMainWindow, QMessageBox, QListWidgetItem, QWidget, QLabel
-from PyQt6.QtCore import QTimer, QByteArray, QThread, pyqtSignal, Qt
-from PyQt6.QtGui import QPixmap, QIcon
+from PyQt6.QtWidgets import *
+from PyQt6.QtCore import *
+from PyQt6.QtGui import *
 
 import api
 from PyQt6 import uic
@@ -30,8 +30,13 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         uic.loadUi("MainWindow.ui", self)
-        
+        self.pages.setCurrentWidget(self.heroListPage)
         QTimer.singleShot(100, self.loadData)
+        
+        self.starterItems = self.popularItems.findChild(QListWidget, "starterItems")
+        self.earlyGame = self.popularItems.findChild(QListWidget, "earlyGame")
+        self.midGame = self.popularItems.findChild(QListWidget, "midGame")
+        self.lateGame = self.popularItems.findChild(QListWidget, "lateGame")
         
         self.actionExit.triggered.connect(self.closeWindow)
         
@@ -50,17 +55,14 @@ class MainWindow(QMainWindow):
         self.showHeroSpecificPage(item.data(Qt.ItemDataRole.UserRole)['id'])        
         
     def showHeroSpecificPage(self, id):
-        self.heroList.hide()
+        
         
         if len(api.ITEM_BY_ID) == 0:
             api.getAllItems()
-        
-        self.heroPage = QWidget(self)
-        uic.loadUi("HeroView.ui", self.heroPage)
-        
+
         self.populateHeroSpecificPage(id)
         
-        self.heroPage.show()
+        self.pages.setCurrentWidget(self.popularItems)
             
     # QLabel variables include : itemIcon, itemTitle, itemDescription (QLabels);
     def itemDoubleClicked(self, item):
@@ -106,7 +108,7 @@ class MainWindow(QMainWindow):
             loader.start()
             self.loaders.append(loader)
              
-            self.heroPage.starterItems.addItem(listItem)
+            self.starterItems.addItem(listItem)
             
         for key in response["early_game_items"].keys():
             listItem = QListWidgetItem()
@@ -119,7 +121,7 @@ class MainWindow(QMainWindow):
             loader.start()
             self.loaders.append(loader)
 
-            self.heroPage.earlyGame.addItem(listItem)
+            self.earlyGame.addItem(listItem)
             
         for key in response["mid_game_items"].keys():
             listItem = QListWidgetItem()
@@ -132,7 +134,7 @@ class MainWindow(QMainWindow):
             loader.start()
             self.loaders.append(loader)
             
-            self.heroPage.midGame.addItem(listItem)
+            self.midGame.addItem(listItem)
             
         for key in response["late_game_items"].keys():
             listItem = QListWidgetItem()
@@ -146,12 +148,11 @@ class MainWindow(QMainWindow):
             
             self.loaders.append(loader)
 
-            self.heroPage.lateGame.addItem(listItem)
+            self.lateGame.addItem(listItem)
 
-        self.heroPage.starterItems.itemDoubleClicked.connect(self.itemDoubleClicked)
-        self.heroPage.earlyGame.itemDoubleClicked.connect(self.itemDoubleClicked)
-        self.heroPage.midGame.itemDoubleClicked.connect(self.itemDoubleClicked)
-        self.heroPage.lateGame.itemDoubleClicked.connect(self.itemDoubleClicked)
+        self.starterItems.itemDoubleClicked.connect(self.itemDoubleClicked) 
+        self.midGame.itemDoubleClicked.connect(self.itemDoubleClicked)
+        self.lateGame.itemDoubleClicked.connect(self.itemDoubleClicked)
 
     def setIcon(self, listItem, fileName):
         listItem.setIcon(QIcon(fileName))

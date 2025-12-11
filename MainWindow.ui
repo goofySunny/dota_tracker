@@ -22,7 +22,7 @@
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="QStackedWidget" name="stackedWidget">
+     <widget class="QStackedWidget" name="pages">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
         <horstretch>0</horstretch>
@@ -45,7 +45,7 @@
        <number>1</number>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="itemSpecific">
        <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -113,10 +113,10 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="heroList">
+      <widget class="QWidget" name="heroListPage">
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
-         <widget class="QListWidget" name="listWidget"/>
+         <widget class="QListWidget" name="heroList"/>
         </item>
        </layout>
       </widget>
@@ -126,7 +126,10 @@
          <number>6</number>
         </property>
         <item>
-         <widget class="QListWidget" name="listWidget_4">
+         <widget class="QListWidget" name="starterItems">
+          <property name="selectionMode">
+           <enum>QAbstractItemView::SelectionMode::NoSelection</enum>
+          </property>
           <item>
            <property name="text">
             <string>Starter Items:</string>
@@ -135,7 +138,10 @@
          </widget>
         </item>
         <item>
-         <widget class="QListWidget" name="listWidget_5">
+         <widget class="QListWidget" name="earlyGame">
+          <property name="selectionMode">
+           <enum>QAbstractItemView::SelectionMode::NoSelection</enum>
+          </property>
           <item>
            <property name="text">
             <string>Early game:</string>
@@ -144,7 +150,10 @@
          </widget>
         </item>
         <item>
-         <widget class="QListWidget" name="listWidget_3">
+         <widget class="QListWidget" name="midGame">
+          <property name="selectionMode">
+           <enum>QAbstractItemView::SelectionMode::NoSelection</enum>
+          </property>
           <item>
            <property name="text">
             <string>Mid game:</string>
@@ -153,7 +162,10 @@
          </widget>
         </item>
         <item>
-         <widget class="QListWidget" name="listWidget_2">
+         <widget class="QListWidget" name="lateGame">
+          <property name="selectionMode">
+           <enum>QAbstractItemView::SelectionMode::NoSelection</enum>
+          </property>
           <item>
            <property name="text">
             <string>Late game:</string>
