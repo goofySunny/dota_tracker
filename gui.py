@@ -70,15 +70,15 @@ class MainWindow(QMainWindow):
         self.showItemSpecificPage(item)
 
     def showItemSpecificPage(self, item):
-        self.heroPage.hide()
-        self.heroList.hide()
-        self.itemView = QWidget(self)
-        uic.loadUi("ItemView.ui", self.itemView)
+        self.pages.setCurrentWidget(self.itemSpecific)
         icon = QIcon(api.getItemImage(item["img"], item["dname"]))
-        self.itemView.itemIcon.setPixmap(icon.pixmap(64,64))
-        self.itemView.itemTitle.setText(item["dname"])
-        self.itemView.itemDescription.setText(item["lore"])
-        self.itemView.show()
+        self.itemSpecific.itemIcon = self.findChild(QLabel, "itemIcon")
+        self.itemSpecific.itemTitle = self.findChild(QLabel, "itemTitle")
+        self.itemSpecific.itemDescription = self.findChild(QLabel, "itemDescription")
+  
+        self.itemSpecific.itemIcon.setPixmap(icon.pixmap(64,64))
+        self.itemSpecific.itemTitle.setText(item["dname"])
+        self.itemSpecific.itemDescription.setText(item["lore"])
 
     def closeWindow(self):
         confirm = QMessageBox.question(self,

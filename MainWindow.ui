@@ -45,7 +45,7 @@
        <number>1</number>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="itemSpecific">
        <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -66,7 +66,7 @@
          </spacer>
         </item>
         <item alignment="Qt::AlignmentFlag::AlignHCenter">
-         <widget class="QLabel" name="label">
+         <widget class="QLabel" name="itemIcon">
           <property name="minimumSize">
            <size>
             <width>0</width>
@@ -79,7 +79,7 @@
          </widget>
         </item>
         <item alignment="Qt::AlignmentFlag::AlignHCenter">
-         <widget class="QLabel" name="label_2">
+         <widget class="QLabel" name="itemTitle">
           <property name="minimumSize">
            <size>
             <width>0</width>
@@ -92,7 +92,7 @@
          </widget>
         </item>
         <item alignment="Qt::AlignmentFlag::AlignHCenter">
-         <widget class="QLabel" name="label_3">
+         <widget class="QLabel" name="itemDescription">
           <property name="text">
            <string>TextLabel</string>
           </property>
